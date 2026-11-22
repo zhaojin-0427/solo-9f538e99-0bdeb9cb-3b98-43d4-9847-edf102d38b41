@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    image: material-price-index:latest
+    container_name: material-price-index
+    ports:
+      - "8000:8000"
+    environment:
+      DB_PATH: /data/prices.db
+      SECRET_KEY: change-me-in-production
+    volumes:
+      - price-index-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  price-index-data:

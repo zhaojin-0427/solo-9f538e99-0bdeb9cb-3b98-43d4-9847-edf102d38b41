@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}v{{ version_id }} 各月指数 · 建材价格指数发布台{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>版本 v{{ version_id }} 的逐月指数
+    {% if version_id == latest %}<span class="tag">最新版</span>{% else %}<span class="tag old">历史版</span>{% endif %}
+  </h2>
+  <p class="hint">核算期间可按版号回溯任意新旧发布版的各月指数与参与环比的规格数。</p>
+  <table>
+    <thead>
+      <tr><th>月份</th><th>指数</th><th>环比</th><th>共有规格数</th>
+          <th>上月共有规格合计</th><th>本月共有规格合计</th><th>报价行数</th><th>明细</th></tr>
+    </thead>
+    <tbody>
+    {% for s in stats %}
+      <tr>
+        <td>{{ s.month }}</td>
+        <td class="num strong">{{ s.index | index4 }}</td>
+        <td class="num">{{ s.ratio | ratio4 }}</td>
+        <td class="num">{{ s.common_count }}</td>
+        <td class="num">{{ s.sum_prev_common | money }}</td>
+        <td class="num">{{ s.sum_cur_common | money }}</td>
+        <td class="num">{{ quote_counts.get(s.month, 0) }}</td>
+        <td><a href="{{ url_for('month_quotes', version_id=version_id, month=s.month) }}">查看明细</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p><a href="{{ url_for('index') }}">← 返回发布台</a></p>
+  <h3>切换版本</h3>
+  <div class="version-switch">
+    {% for v in versions %}
+      <a class="vchip {% if v.version_id == version_id %}active{% endif %}"
+         href="{{ url_for('version_detail', version_id=v.version_id) }}">v{{ v.version_id }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

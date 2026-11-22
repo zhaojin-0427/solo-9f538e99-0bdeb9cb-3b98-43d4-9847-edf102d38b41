@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <h2>发布 / 更正报价（一次选一个月份，上传一个 CSV）</h2>
+  <form method="post" action="{{ url_for('publish_form') }}" enctype="multipart/form-data" class="publish-form">
+    <label>月份（YYYY-MM）
+      <input type="text" name="month" placeholder="2026-01" required
+             pattern="\d{4}-(0[1-9]|1[0-2])" title="格式 YYYY-MM，例如 2026-01">
+    </label>
+    <label>报价 CSV（表头 <code>spec_code,unit_price</code>，规格码唯一、单价为正）
+      <input type="file" name="csv_file" accept=".csv,text/csv" required>
+    </label>
+    <input type="hidden" name="base_version" value="{{ base_version if base_version is not none else '' }}">
+    <button type="submit">发布换版</button>
+  </form>
+  <p class="hint">
+    首月任选；之后只接受紧接最后月份的下一月（续报）。对已存在的月份再提交即视为<strong>整月更正</strong>：
+    仅重算所改月及前后各一月的环比，后续各月指数随之更新。若相邻两月无共有规格，将指出月份并拒绝换版。
+  </p>
+</section>
+
+<section class="card">
+  <h2>发布版本</h2>
+  {% if versions %}
+  <table>
+    <thead><tr><th>版号</th><th>类型</th><th>目标月份</th><th>生成时间 (UTC)</th><th>操作</th></tr></thead>
+    <tbody>
+    {% for v in versions %}
+      <tr {% if v.version_id == latest %}class="latest"{% endif %}>
+        <td>v{{ v.version_id }}{% if v.version_id == latest %}（最新）{% endif %}</td>
+        <td>
+          {% if v.kind == 'first' %}首月发布
+          {% elif v.kind == 'append' %}续报下月
+          {% else %}整月更正{% endif %}
+        </td>
+        <td>{{ v.target_month }}</td>
+        <td>{{ v.created_at }}</td>
+        <td><a href="{{ url_for('version_detail', version_id=v.version_id) }}">查看该版各月指数</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="hint">尚无发布版，请先上传首月报价 CSV。</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>最新版 v{{ latest if latest is not none else '—' }} 的逐月指数</h2>
+  {% if stats %}
+  <table>
+    <thead>
+      <tr><th>月份</th><th>指数</th><th>环比</th><th>参与环比的共有规格数</th>
+          <th>上月共有规格合计</th><th>本月共有规格合计</th><th>报价明细</th></tr>
+    </thead>
+    <tbody>
+    {% for s in stats %}
+      <tr>
+        <td>{{ s.month }}</td>
+        <td class="num strong">{{ s.index | index4 }}</td>
+        <td class="num">{{ s.ratio | ratio4 }}</td>
+        <td class="num">{{ s.common_count }}{% if s.common_count == 0 and s.prev_month %}（异常）{% endif %}</td>
+        <td class="num">{{ s.sum_prev_common | money }}</td>
+        <td class="num">{{ s.sum_cur_common | money }}</td>
+        <td><a href="{{ url_for('month_quotes', version_id=latest, month=s.month) }}">查看明细</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="hint">暂无数据。</p>
+  {% endif %}
+</section>
+
+{% endblock %}

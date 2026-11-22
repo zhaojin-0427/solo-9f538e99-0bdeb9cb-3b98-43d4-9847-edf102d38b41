@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}v{{ version_id }} · {{ month }} 报价明细{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>版本 v{{ version_id }} · {{ month }} 报价明细</h2>
+  {% if stat and stat.common_specs %}
+  <p class="hint">本月与上月 {{ stat.prev_month }} 的共有规格（{{ stat.common_count }} 个）：
+    <code>{{ stat.common_specs | join(', ') }}</code></p>
+  {% elif stat and not stat.prev_month %}
+  <p class="hint">首月，指数基数 100，无环比。</p>
+  {% endif %}
+  <table>
+    <thead><tr><th>规格码</th><th>单价</th>{% if stat %}<th>是否参与本月环比</th>{% endif %}</tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.spec_code }}</td>
+        <td class="num">{{ r.unit_price | money }}</td>
+        {% if stat %}
+        <td>{% if r.spec_code in stat.common_specs %}是{% else %}否（非共有规格）{% endif %}</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p>
+    <a href="{{ url_for('version_detail', version_id=version_id) }}">← 返回 v{{ version_id }} 指数总览</a>
+    | <a href="{{ url_for('index') }}">发布台</a>
+  </p>
+</section>
+{% endblock %}

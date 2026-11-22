@@ -1,0 +1,44 @@
+* { box-sizing: border-box; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  margin: 0; background: #f4f6f8; color: #1f2933; line-height: 1.5;
+}
+header { background: #14385c; color: #fff; padding: 18px 28px; }
+header h1 { margin: 0; font-size: 22px; }
+header h1 a { color: #fff; text-decoration: none; }
+.sub { margin: 4px 0 0; color: #b9c9dc; font-size: 13px; }
+main { max-width: 1080px; margin: 24px auto; padding: 0 20px; }
+footer { text-align: center; color: #7b8794; font-size: 12px; padding: 24px; }
+.card {
+  background: #fff; border: 1px solid #e1e7ef; border-radius: 10px;
+  padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+h2 { margin-top: 0; font-size: 18px; }
+h3 { font-size: 15px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #d9e2ec; padding: 8px 10px; text-align: left; }
+th { background: #f0f4f8; }
+tr.latest td { background: #eef6ff; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.strong { font-weight: 700; }
+.publish-form { display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+.publish-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14px; }
+.publish-form input { padding: 8px 10px; border: 1px solid #b5c2d1; border-radius: 6px; font-size: 14px; }
+button {
+  align-self: flex-start; background: #1d5fa8; color: #fff; border: 0;
+  border-radius: 6px; padding: 10px 26px; font-size: 15px; cursor: pointer;
+}
+button:hover { background: #174a84; }
+.hint { color: #52606d; font-size: 13px; }
+.flash { padding: 12px 16px; border-radius: 8px; margin-bottom: 14px; font-size: 14px; }
+.flash.error { background: #fde8e8; border: 1px solid #f5b5b5; color: #9b1c1c; }
+.flash.ok { background: #e6f6ec; border: 1px solid #9fd8b2; color: #17663a; }
+.tag { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #dbeafe; color: #1e4fa3; margin-left: 8px; }
+.tag.old { background: #f1f1f1; color: #666; }
+.version-switch { display: flex; flex-wrap: wrap; gap: 8px; }
+.vchip {
+  padding: 4px 12px; border-radius: 999px; border: 1px solid #b5c2d1;
+  text-decoration: none; color: #1d5fa8; font-size: 13px; background: #f8fafc;
+}
+.vchip.active { background: #1d5fa8; color: #fff; }
+code { background: #f0f4f8; padding: 1px 5px; border-radius: 4px; }
